@@ -1,20 +1,37 @@
-# Bloomberg Chef Style Guide
+# Prelude
 
-This style guideline draws a lot of inspiration from the
-[Ruby Style Guide][0]; the author of the guide also maintains the
-widely used [RuboCop][1] static code analysis framework. In order to
-write high-quality, re-usable Chef cookbooks it is _very important_ to
-understand the best practices around the Ruby language. For that very
-reason we use many of the same tools (and language rules) when testing
-our Chef cookbooks.
+This guide is an attempt to document the "best practices" which have
+emerged at [Bloomberg][4] during our journey of deploying Chef in a
+large enterprise environment. It is intended to serve as a reference
+to Bloomberg's infrastructure engineers, as well as the Chef community
+as a whole, on how to write high-quality, re-usable infrastructure
+code which is capable of being used infront or behind a corporate
+firewall.
+
+During the initial phase of bringing Chef into a large enterprise,
+especially one with _several thousand_ developers, we realized that
+there needed to be some tight constraints put on what (and how) code
+was written. Therefore after dragging our feet for a long time we
+decided to invest some time in writing this style guide. Since we
+contribute and consume the open source cookbooks from the Chef
+community it made sense to publish this document. We hope that it can
+be of some guidance on how to write confident Chef cookbooks.
+
+# The Chef Style Guide
 
 The core [Chef framework][2] is written in the Ruby programming
-langauge. The same programming language is used for writing
-[Chef cookbooks][3], and thus, we are able to apply the idiomatic
-princples of the [Ruby Style Guide][0]. The Ruby Style Guide was a
-direct inspiration for the layout and format of this document, and in
-the context of Chef, we intent for this guide to be a natural
-extension.
+language.  The same programming language is used to write
+[Chef cookbooks][3]. Therefore, it is natural for us to start with the
+best practices of the Ruby programming language. Luckily for us this
+has already been done by the amazing Ruby community.
+
+## The Ruby Style Guide
+
+It is very important to understand that this document models itself
+from the excellent [Ruby Style Guide][0] which is actively being
+maintined by the Ruby community. Most of the principles laid out in
+this guide are directly applicable to writing confident infrastructure
+code with Chef.
 
 ## Table of Contents
 
@@ -23,13 +40,10 @@ extension.
   * [Infrastructure as Code](#infrastructure-as-code)
   * [Code Reusability](#code-reusability)
   * [Unit and Integration Testing](#unit-and-integration-testing)
-* [Repository Layout](#repository-layout)
-  * [FoodCritic](#foodcritic)
-  * [RSpec](#rspec)
-  * [RuboCop](#rubocop)
-  * [Travis CI](#travis-ci)
-  * [Test Kitchen](#test-kitchen)
-  * [YARD](#yard)
+  * [Service Discovery](#service-discovery)
+* [Platform Considerations](#platform-considerations)
+  * [Filesystems](#filesystems)
+  * [Service Management](#service-management)
 * [Cookbook Patterns](#cookbook-patterns)
   * [Application Cookbook](#application-cookbook)
   * [Library Cookbook](#library-cookbook)
@@ -39,6 +53,13 @@ extension.
   * [Custom Resources](#custom-resources)
   * [Recipes](#recipes)
   * [Templates](#templates)
+* [Cookbook Tooling](#cookbook tooling)
+  * [FoodCritic](#foodcritic)
+  * [RSpec](#rspec)
+  * [RuboCop](#rubocop)
+  * [Travis CI](#travis-ci)
+  * [Test Kitchen](#test-kitchen)
+  * [YARD](#yard)
 
 ## How to Contribute?
 It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
@@ -51,19 +72,13 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Unit and Integration Testing
 
-## Repository Layout
+### Service Discovery
 
-### FoodCritic
+## Platform Considerations
 
-### RSpec
+### Filesystems
 
-### RuboCop
-
-### Travis CI
-
-### Test Kitchen
-
-### YARD
+### Service Management
 
 ## Cookbook Patterns
 
@@ -83,7 +98,22 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Templates
 
+## Cookbook Tooling
+
+### FoodCritic
+
+### RSpec
+
+### RuboCop
+
+### Travis CI
+
+### Test Kitchen
+
+### YARD
+
 [0]: https://github.com/bbatsov/ruby-style-guide
 [1]: https://github.com/bbatsov/rubocop
 [2]: https://github.com/chef/chef
 [3]: http://docs.chef.io/cookbooks.html
+[4]: http://www.bloomberglabs.com
