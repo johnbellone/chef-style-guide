@@ -39,6 +39,7 @@ code with Chef.
 * [Guiding Principles](#guiding-principles)
   * [Infrastructure as Code](#infrastructure-as-code)
   * [Code Reusability](#code-reusability)
+  * [Continuous Integration](#continuous-integration)
   * [Unit and Integration Testing](#unit-and-integration-testing)
   * [Service Discovery](#service-discovery)
 * [Platform Considerations](#platform-considerations)
@@ -57,9 +58,7 @@ code with Chef.
   * [FoodCritic](#foodcritic)
   * [RSpec](#rspec)
   * [RuboCop](#rubocop)
-  * [Travis CI](#travis-ci)
   * [Test Kitchen](#test-kitchen)
-  * [YARD](#yard)
 
 ## How to Contribute?
 It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
@@ -69,6 +68,8 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 ### Infrastructure as Code
 
 ### Code Reusability
+
+### Continuous Integration
 
 ### Unit and Integration Testing
 
@@ -233,11 +234,7 @@ templates.
 
 ### RuboCop
 
-### Travis CI
-
 ### Test Kitchen
-
-### YARD
 
 [0]: https://github.com/bbatsov/ruby-style-guide
 [1]: https://github.com/bbatsov/rubocop
