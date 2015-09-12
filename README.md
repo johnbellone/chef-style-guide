@@ -78,6 +78,54 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Filesystems
 
+While writing an [application cookbook](#application-cookbook) it is
+often the case where you may need to write out a configuration file to
+disk. In the general case one can simply use Ruby string interpolation
+to create the proper configuration file from a few variables. To
+illustrate this point let's use the common example of downloading a
+file from an HTTP server and then installing that package.
+
+```ruby
+url = 'http://mirrors.rit.edu/epel/6/x86_64/collectd-4.10.9-1.el6.x86_64.rpm'
+checksum = '549978cc77f9466925701668bfffa147bcb65ef5fa77dad4bee3d85231090010'
+basename = File.basename(url)
+remote_file "#{Chef::Config[:file_cache_path]/#{basename}" do
+  source url
+  checksum checksum
+end
+
+package 'collectd' do
+  source "#{Chef::Config[:file_cache_path]/#{basename}"
+  action :upgrade
+end
+```
+
+The above snippet will work as intended on a POSIX operating system,
+but where this will *not* work is on Windows. A typical path on a
+Windows file system is addressed with backslashes instead of forward
+slashes. A better approach is to use Ruby's built-in API to create
+the filesystem path based on the operating system that it is running
+on. Let's visit that example again using the [Ruby File.join API][10].
+
+```ruby
+url = 'http://mirrors.rit.edu/epel/6/x86_64/collectd-4.10.9-1.el6.x86_64.rpm'
+checksum = '549978cc77f9466925701668bfffa147bcb65ef5fa77dad4bee3d85231090010'
+basename = File.basename(url)
+remote_file File.join(Chef::Config[:file_cache_path], basename) do
+  source url
+  checksum checksum
+end
+
+package 'collectd' do
+  source File.join(Chef::Config[:file_cache_path], basename)
+  action :upgrade
+end
+```
+
+This subtle change would now have a correct filesystem separator on
+the Windows platform and thus make our recipe a little less error
+prone for someone attempting to use it.
+
 ### Service Management
 
 The whole purpose of a [application cookbook](#application-cookbook)
@@ -201,3 +249,4 @@ templates.
 [7]: https://github.com/johnbellone/cassandra-cluster-cookbook/blob/master/recipes/default.rb
 [8]: https://github.com/poise/poise-service
 [9]: https://github.com/poise/poise-service-runit
+[10]: http://ruby-doc.org/core-2.2.0/File.html#method-c-join
