@@ -80,6 +80,85 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Service Management
 
+The whole purpose of a [application cookbook](#application-cookbook)
+is to provide Chef primitives to install and configure an application
+on a node. This more often than not requires enabling, starting and
+restarting system services. To illustrate our point let's take a look
+at the [Cassandra Cluster cookbook][5].
+
+The Cassandra Cluster cookbook is an application cookbook which
+installs and configures a node to be a member of a
+[Cassandra database cluster][6].  This cookbook has an extremely
+simple and straight forward default recipe.  An abbreviated version of
+the [Cassandra cookbook's default recipe][7] is given as an example
+below:
+
+```ruby
+cassandra_config service_name do |r|
+  owner node['cassandra-cluster']['service_user']
+  group node['cassandra-cluster']['service_group']
+
+  node['cassandra-cluster']['config'].each_pair { |k, v| r.send(k, v) }
+  notifies :restart, "cassandra_service[#{name}]", :delayed
+end
+
+cassandra_service service_name do |r|
+  user node['cassandra-cluster']['service_user']
+  group node['cassandra-cluster']['service_group']
+
+  node['cassandra-cluster']['service'].each_pair { |k, v| r.send(k, v) }
+end
+```
+
+Let's focus on the second resource in this snippet of the recipe. This
+is a custom resource which uses the
+[Poise Service library cookbook][8] for service management. The
+*cassandra_service* resource has attributes which control how the
+Cassandra software is installed and where the configuration file is
+located. In the default recipe these are driven through the
+`node['cassandra-cluster']['service']` attribute Hash.
+
+The Poise Service library cookbook provides a reusable pattern for
+creating custom resources that manage services. In practical terms
+this means that the same code referenced above will work with the
+native system management routines for any of the supported
+platforms. Take a look at the table below to further illustrate how
+the Poise Service library cookbook would configure the
+cassandra_service resource.
+
+| Platform | System Management |
+| -------- | ----------------- |
+| Ubuntu 12.04 | Upstart |
+| Ubuntu 14.04 | Upstart |
+| Ubuntu 16.04 | Systemd |
+| CentOS 5.11  | SysV |
+| CentOS 6.7   | Upstart |
+| CentOS 7.1   | Systemd |
+| Solaris | SysV |
+| AIX | SysV |
+
+Furthermore, the Poise Service library allows for the "service
+provider" to be specified as a custom attribute or the default set
+through a node attribute. So, for instance, if we would like to use
+the [Runit service management framework][9] instead of the native
+provider that can simply be done by including a new cookbook and
+setting a node attribute in a wrapper cookbook.
+
+```ruby
+node.default['poise-service']['provider'] = 'runit'
+```
+
+Why is this important? By using the Poise Service library cookbook we
+can abstract away the concerns of service provider management and
+build a clear and concise cookbook. It reads a lot easier, and it is a
+whole lot more flexible out of the box. It also means that the same
+cookbook can be used on all of the above platforms without the need
+for the management of service provider templates. This is an
+_extremely valuable_ pattern when you are managing dozens of
+application cookbooks. We now have a *single* library cookbook instead
+of a dozen application cookbooks with different service management
+templates.
+
 ## Cookbook Patterns
 
 ### Application Cookbook
@@ -88,7 +167,7 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Wrapper Cookbook
 
-## Guiding Principles
+## Cookbook Design
 
 ### Attributes
 
@@ -117,3 +196,8 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 [2]: https://github.com/chef/chef
 [3]: http://docs.chef.io/cookbooks.html
 [4]: http://www.bloomberglabs.com
+[5]: https://github.com/johnbellone/cassandra-cluster-cookbook
+[6]: http://cassandra.apache.org
+[7]: https://github.com/johnbellone/cassandra-cluster-cookbook/blob/master/recipes/default.rb
+[8]: https://github.com/poise/poise-service
+[9]: https://github.com/poise/poise-service-runit
