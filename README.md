@@ -210,9 +210,42 @@ templates.
 
 ## Cookbook Patterns
 
+### Library Cookbook
+
+A library cookbook abstracts common patterns into resources and
+providers which can be used to build both wrapper cookbooks and
+application cookbooks.
+
+A great example of a library cookbook is the [libarchive cookbook][11]
+which provides a Chef resource primitive to manage compressed archives
+of all different formats. This makes it extremely useful to write
+application cookbooks that are agnostic to the underlying compression
+format. The example below downloads a compressed archive of the
+[GitHub Hub command][12] for Linux x86_64 and extracts it to the /opt
+directory.
+
+```ruby
+archive_url = 'https://github.com/github/hub/releases/download/v2.2.1/hub-linux-amd64-2.2.1.tar.gz'
+remote_file File.join(Chef::Config[:file_cache_path], File.basename(archive_url)) do
+  source archive_url
+end
+
+libarchive_file File.join(Chef::Config[:file_cache_path], File.basename(archive_url)) do
+  extract_to '/opt/hub/2.2.1'
+end
+```
+
+A more complex example of using the libarchive_file resource as a
+primitive can be found in the [libartifact cookbook][12]. This
+cookbook goes a step further and manages application artifacts on disk
+using symbolic links. It utilizies the libarchive_file resource for
+managing the extraction of compressed artifacts.
+
 ### Application Cookbook
 
-### Library Cookbook
+An application cookbook is the most common cookbook pattern. Its
+purpose is to install, configure and manage the lifecycle of an
+application on a node.
 
 ### Wrapper Cookbook
 
@@ -247,3 +280,5 @@ templates.
 [8]: https://github.com/poise/poise-service
 [9]: https://github.com/poise/poise-service-runit
 [10]: http://ruby-doc.org/core-2.2.0/File.html#method-c-join
+[11]: https://github.com/reset/libarchive-cookbook
+[12]: https://github.com/github/hub
