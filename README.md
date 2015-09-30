@@ -38,22 +38,21 @@ code with Chef.
 * [How to Contribute](#how-to-contribute)
 * [Guiding Principles](#guiding-principles)
   * [Infrastructure as Code](#infrastructure-as-code)
-  * [Code Reusability](#code-reusability)
   * [Continuous Integration](#continuous-integration)
   * [Unit and Integration Testing](#unit-and-integration-testing)
   * [Service Discovery](#service-discovery)
 * [Platform Considerations](#platform-considerations)
   * [Filesystems](#filesystems)
   * [Service Management](#service-management)
-* [Cookbook Patterns](#cookbook-patterns)
-  * [Application Cookbook](#application-cookbook)
-  * [Library Cookbook](#library-cookbook)
-  * [Wrapper Cookbook](#wrapper-cookbook)
 * [Cookbook Design](#cookbook-design)
   * [Attributes](#attributes)
   * [Custom Resources](#custom-resources)
   * [Recipes](#recipes)
   * [Templates](#templates)
+* [Cookbook Patterns](#cookbook-patterns)
+  * [Application Cookbook](#application-cookbook)
+  * [Library Cookbook](#library-cookbook)
+  * [Wrapper Cookbook](#wrapper-cookbook)
 * [Cookbook Tooling](#cookbook tooling)
   * [FoodCritic](#foodcritic)
   * [RSpec](#rspec)
@@ -66,8 +65,6 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 ## Guiding Principles
 
 ### Infrastructure as Code
-
-### Code Reusability
 
 ### Continuous Integration
 
@@ -208,6 +205,37 @@ application cookbooks. We now have a *single* library cookbook instead
 of a dozen application cookbooks with different service management
 templates.
 
+## Cookbook Design
+
+Since we have a diverse set of platform requirements for most of our
+cookbooks we have made several decisions regarding the usage of node
+attributes, custom resources and templates. Additionally, because our
+engineers do *not* have knife access this limits the custom values
+which could be set in node attributes. It also means that we must
+support looking up variable data such as data bags through an HTTP
+service.
+
+### Ohai
+
+In the general case we prefer writing custom plugins which populate
+Ohai attributes from either the operating system or external services.
+This is important as it allows us to describe the state of a system
+with the `ohai` command-line tool outside of a Chef convergence.
+
+### Attributes
+
+By limiting the default value of attributes it allows for deployment
+specific overrides to happen from outside of a cookbook. There should
+be very few cases where this is used instead of a
+[service discovery](#service-discovery) mechanism, but in a pinch it
+may be necessary.
+
+### Custom Resources
+
+### Recipes
+
+### Templates
+
 ## Cookbook Patterns
 
 ### Library Cookbook
@@ -286,16 +314,6 @@ specific configuration of a cluster of nodes. The cluster cookbook may
 set purposeful node attributes to fine tune the underlying application
 running on the cluster. A recipe within a cluster cookbook is generally
 one of the only recipes directly applied to a node's run-list.
-
-## Cookbook Design
-
-### Attributes
-
-### Custom Resources
-
-### Recipes
-
-### Templates
 
 ## Cookbook Tooling
 
