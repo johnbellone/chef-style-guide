@@ -243,11 +243,49 @@ managing the extraction of compressed artifacts.
 
 ### Application Cookbook
 
-An application cookbook is the most common cookbook pattern. Its
+The application cookbook is the most common cookbook pattern. Its
 purpose is to install, configure and manage the lifecycle of an
-application on a node.
+application on a node. Most cookbooks which are publically available
+on the [Chef Supermarket][13] are of this type.
+
+The complexity of application cookbooks can vary very widely. A
+cookbook such as our own [Collectd cookbook][14] installs and
+configures the collectd monitoring daemon. Because there are several
+tuning knobs on the daemon itself we take the approach of breaking out
+additional Chef resource primitives to manage the configuration and
+service separately. There is an additional resource which manages the
+configuration of collectd plugins.
+
+This process of modeling an application cookbook with several
+primitives allows for the maximum flexibility for testing and
+deployment. Because we are testing the *validity* of the input
+properties of a resource we're able to fail the Chef convergence prior
+to configuration being modified on the target.
 
 ### Wrapper Cookbook
+
+In an enterprise environment if the decision is made to include a
+public cookbook available on the [Chef Supermarket][13] it almost
+always should be included via a wrapper cookbook. If the underlying
+application cookbooks are flexible enough - that is, the Chef resource
+primitives appropriately model the configuration and application -
+writing a wrapper cookbook is very straightforward and simple.
+
+There are a few types of wrapper cookbooks which are generally accepted
+as best practices within the Chef community. These patterns represent
+a purposeful adaptation of the concept of a wrapper cookbook.
+
+A base cookbook is a type of wrapper cookbook which is in the expanded
+run-list of each and every node within an organization. The base
+cookbook itself generally wraps core cookbooks which harden and
+configure the operating system itself. It is also the place where
+mirrors and the chef-client are configured.
+
+A cluster cookbook is a type of wrapper cookbook which targets a
+specific configuration of a cluster of nodes. The cluster cookbook may
+set purposeful node attributes to fine tune the underlying application
+running on the cluster. A recipe within a cluster cookbook is generally
+one of the only recipes directly applied to a node's run-list.
 
 ## Cookbook Design
 
@@ -282,3 +320,5 @@ application on a node.
 [10]: http://ruby-doc.org/core-2.2.0/File.html#method-c-join
 [11]: https://github.com/reset/libarchive-cookbook
 [12]: https://github.com/github/hub
+[13]: https://supermarket.chef.io/
+[14]: https://github.com/johnbellone/collectd-cookbook
