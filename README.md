@@ -41,8 +41,9 @@ code with Chef.
   * [Continuous Integration](#continuous-integration)
   * [Unit and Integration Testing](#unit-and-integration-testing)
   * [Service Discovery](#service-discovery)
+  * [Semantic Versioning](#semantic-versioning)
 * [Platform Considerations](#platform-considerations)
-  * [Filesystems](#filesystems)
+  * [Filesystem Paths](#filesystem-paths)
   * [Service Management](#service-management)
 * [Cookbook Design](#cookbook-design)
   * [Attributes](#attributes)
@@ -53,9 +54,8 @@ code with Chef.
   * [Application Cookbook](#application-cookbook)
   * [Library Cookbook](#library-cookbook)
   * [Wrapper Cookbook](#wrapper-cookbook)
-* [Cookbook Tooling](#cookbook tooling)
-  * [FoodCritic](#foodcritic)
-  * [RSpec](#rspec)
+* [Cookbook Development](#cookbook-development)
+  * [Chef Development Kit](#chef-development-kit)
   * [RuboCop](#rubocop)
   * [Test Kitchen](#test-kitchen)
 
@@ -72,9 +72,36 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 
 ### Service Discovery
 
+### Semantic Versioning
+
+The open source software development community has begun to gravitate
+towards a standard of versioning software to accurately express the
+impact of changes between releases. By adhering to a strict policy of
+[semantic versioning][15] we are able to indicate to contingent
+cookbooks the impact of an impending release.
+
+Of course for cookbooks which are fast-moving this can quickly become
+a burden on developer productivity. We rely on our
+[continuous integration](#continuous-integration) pipeline to
+automatically bump the _patch revision_ of the cookbook for each
+promoted release. This means that developers need only to consider the
+_major_ and _minor_ revision numbers to express changes in the target
+cookbook.
+
 ## Platform Considerations
 
-### Filesystems
+Our aim is to produce quality cookbooks which are capable of
+converging in a world of multi-platform operating environments. For
+most community cookbooks it is sufficient to support a few flavors of
+Linux - usually Ubuntu and CentOS - but in an enterprise environment
+we often have to install the same software across _many_ different
+platforms.
+
+This often goes beyond simply concatenating a different package CPU
+architecture or filename extension. The two examples that we run into
+the most often below are _Filesystem Paths_ and _Service Management_.
+
+### Filesystem Paths
 
 While writing an [application cookbook](#application-cookbook) it is
 often the case where you may need to write out a configuration file to
@@ -315,11 +342,9 @@ set purposeful node attributes to fine tune the underlying application
 running on the cluster. A recipe within a cluster cookbook is generally
 one of the only recipes directly applied to a node's run-list.
 
-## Cookbook Tooling
+## Cookbook Development
 
-### FoodCritic
-
-### RSpec
+### Chef Development Kit
 
 ### RuboCop
 
@@ -340,3 +365,4 @@ one of the only recipes directly applied to a node's run-list.
 [12]: https://github.com/github/hub
 [13]: https://supermarket.chef.io/
 [14]: https://github.com/johnbellone/collectd-cookbook
+[15]: http://semver.org/
