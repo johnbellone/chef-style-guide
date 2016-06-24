@@ -41,6 +41,7 @@ code with Chef.
   * [Continuous Integration](#continuous-integration)
   * [Unit and Integration Testing](#unit-and-integration-testing)
   * [Service Discovery](#service-discovery)
+  * [Managing Secrets](#managing-secrets)
   * [Semantic Versioning](#semantic-versioning)
 * [Platform Considerations](#platform-considerations)
   * [Filesystem Paths](#filesystem-paths)
@@ -50,14 +51,17 @@ code with Chef.
   * [Custom Resources](#custom-resources)
   * [Recipes](#recipes)
   * [Templates](#templates)
+* [Policy Development](#policy-development)
+  * [Chef Repository](#chef-repository)
+  * [Hoisting Attributes](#hoisting-attributes)
 * [Cookbook Patterns](#cookbook-patterns)
   * [Application Cookbook](#application-cookbook)
   * [Library Cookbook](#library-cookbook)
   * [Wrapper Cookbook](#wrapper-cookbook)
 * [Cookbook Development](#cookbook-development)
   * [Chef Development Kit](#chef-development-kit)
-  * [RuboCop](#rubocop)
   * [Test Kitchen](#test-kitchen)
+  * [Policyfiles](#policyfiles)
 
 ## How to Contribute?
 It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
@@ -71,6 +75,8 @@ It is very easy, just follow [the contribution guidelines](CONTRIBUTING.md).
 ### Unit and Integration Testing
 
 ### Service Discovery
+
+### Managing Secrets
 
 ### Semantic Versioning
 
@@ -206,9 +212,10 @@ cassandra_service resource.
 | Ubuntu 16.04 | Systemd |
 | CentOS 5.11  | SysV |
 | CentOS 6.7   | Upstart |
-| CentOS 7.1   | Systemd |
-| Solaris | SysV |
-| AIX | SysV |
+| CentOS 7.2   | Systemd |
+| Solaris | SMF |
+| AIX | SMC |
+| FreeBSD | SysV |
 
 Furthermore, the Poise Service library allows for the "service
 provider" to be specified as a custom attribute or the default set
@@ -346,9 +353,42 @@ one of the only recipes directly applied to a node's run-list.
 
 ### Chef Development Kit
 
-### RuboCop
-
 ### Test Kitchen
+
+### Development Workflow
+
+```sh
+chef generate cookbook clojure-service
+cd clojure-service
+bundle install
+chef install
+```
+
+After generating a cookbook there will be several files in the newly
+minted directory. There is one file in particular which drives the
+resolution of cookbook dependencies. The _Policyfile.rb_ is what is
+read when the `chef install` command executes. A fairly plain example
+file can be seen below.
+
+```ruby
+name clojure-service'
+run_list clojure-service::default'
+default_source :community
+cookbook 'clojure-service', path: '.'
+```
+
+Some cookbooks which are less recent may continue to use
+[Berkshelf][16] for managing cookbook dependencies. This tool still
+ships with the [Chef Development Kit](#chef-development-kit). The
+workflow for developing on these cookbooks is very similar to using
+the `chef` command.
+
+```sh
+git clone https://github.com/bloomberg/zookeeper-cookbook
+cd zookeeper-cookbook
+bundle install
+berks install
+```
 
 [0]: https://github.com/bbatsov/ruby-style-guide
 [1]: https://github.com/bbatsov/rubocop
